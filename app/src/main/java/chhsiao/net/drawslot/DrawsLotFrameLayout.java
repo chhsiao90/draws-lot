@@ -13,11 +13,10 @@ import android.widget.ImageView;
  * Created by user on 2015/2/1.
  */
 public class DrawsLotFrameLayout extends FrameLayout {
-    private static final int DEFAULT_MAX_COUNT = 5;
-    private static final int DEFAULT_HIT_COUNT = 2;
     private static final int PAPER_BALL_LENGTH = 150;
 
     private LotsLocation lotsLocation;
+    private DrawsLotGame game;
 
     public DrawsLotFrameLayout(Context context) {
         super(context);
@@ -31,17 +30,18 @@ public class DrawsLotFrameLayout extends FrameLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    public void newGame() {
+    public synchronized void newGame(int lotCount, int hitCount) {
         this.removeAllViews();
-        generateButton(generateGame());
+        game = generateGame(lotCount, hitCount);
+        generateButton();
     }
 
-    private DrawsLotGame generateGame() {
-        return new DrawsLotGame(DEFAULT_MAX_COUNT, DEFAULT_HIT_COUNT);
+    private DrawsLotGame generateGame(int lotCount, int hitCount) {
+        return new DrawsLotGame(lotCount, hitCount);
     }
 
-    private void generateButton(DrawsLotGame drawsLotGame) {
-        for (final DrawsLot drawsLot : drawsLotGame.generateLotResults()) {
+    private void generateButton() {
+        for (final DrawsLot drawsLot : game.generateLotResults()) {
             ImageView paperBall = new ImageView(getContext());
             paperBall.setImageResource(R.drawable.paperball);
             paperBall.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -49,6 +49,7 @@ public class DrawsLotFrameLayout extends FrameLayout {
             paperBall.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    popUpIsHitImage(drawsLot.hit());
                     DrawsLotFrameLayout.this.removeView(view);
                 }
             });
@@ -59,12 +60,25 @@ public class DrawsLotFrameLayout extends FrameLayout {
             params.width = PAPER_BALL_LENGTH;
             params.leftMargin = lotsLocation.nextRandomX();
             params.topMargin = lotsLocation.nextRandomY();
-            this.addView(paperBall, params);
+            addView(paperBall, params);
         }
     }
 
     private void popUpIsHitImage(boolean hit) {
         ImageView showIsHit = new ImageView(getContext());
+        showIsHit.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        showIsHit.setImageResource(hit ? R.drawable.paperhit : R.drawable.paper);
+        showIsHit.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeView(v);
+                if (game.isGameEnd()) {
+                    game.restart();
+                    generateButton();
+                }
+            }
+        });
+        addView(showIsHit);
     }
 
     public void setLotsLocation(LotsLocation lotsLocation) {

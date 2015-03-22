@@ -4,5 +4,8 @@
     <string name="app_name">drawslot</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="start">Start</string>
+    <string name="hit_message">Boom!!</string>
+    <string name="not_hit_message">Nothing Happened..</string>
 
 </resources>

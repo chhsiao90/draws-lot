@@ -13,4 +13,5 @@ public class Lot {
     public boolean isHit() {
         return hit;
     }
+
 }
