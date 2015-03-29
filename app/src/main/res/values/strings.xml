@@ -7,5 +7,13 @@
     <string name="start">Start</string>
     <string name="hit_message">Boom!!</string>
     <string name="not_hit_message">Nothing Happened..</string>
+    <string name="title_activity_menu">MenuActivity</string>
+    <string name="title_activity_draw">DrawsActivity</string>
+    <string name="title_dialog_setting">Setting</string>
+    <string name="btn_start">Start</string>
+    <string name="btn_exit">Exit</string>
+    <string name="btn_play">Play</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="msg_lots_information">Remains</string>
 
 </resources>

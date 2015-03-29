@@ -1,22 +1,19 @@
 package chhsiao.net.drawslot;
 
-import android.app.AlertDialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-/**
- * Created by user on 2015/2/1.
- */
 public class DrawsLotFrameLayout extends FrameLayout {
     private static final int PAPER_BALL_LENGTH = 150;
 
     private LotsLocation lotsLocation;
     private DrawsLotGame game;
+    private TextView textViewInformation;
 
     public DrawsLotFrameLayout(Context context) {
         super(context);
@@ -33,11 +30,26 @@ public class DrawsLotFrameLayout extends FrameLayout {
     public synchronized void newGame(int lotCount, int hitCount) {
         this.removeAllViews();
         game = generateGame(lotCount, hitCount);
+        generateTextViewInformation();
         generateButton();
     }
 
     private DrawsLotGame generateGame(int lotCount, int hitCount) {
         return new DrawsLotGame(lotCount, hitCount);
+    }
+
+    private void generateTextViewInformation() {
+        textViewInformation = new TextView(getContext());
+        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        params.gravity = Gravity.RIGHT | Gravity.BOTTOM;
+        params.bottomMargin = 0;
+        params.rightMargin = 0;
+        addView(textViewInformation, params);
+        refreshInformation();
+    }
+
+    private void refreshInformation() {
+        textViewInformation.setText(String.format("%s: %d / %d", getContext().getString(R.string.msg_lots_information), game.getRemainHitLots(), game.getRemainLots()));
     }
 
     private void generateButton() {
@@ -51,6 +63,7 @@ public class DrawsLotFrameLayout extends FrameLayout {
                 public void onClick(View view) {
                     popUpIsHitImage(drawsLot.hit());
                     DrawsLotFrameLayout.this.removeView(view);
+                    refreshInformation();
                 }
             });
 
@@ -75,6 +88,7 @@ public class DrawsLotFrameLayout extends FrameLayout {
                 if (game.isGameEnd()) {
                     game.restart();
                     generateButton();
+                    refreshInformation();
                 }
             }
         });
@@ -84,4 +98,5 @@ public class DrawsLotFrameLayout extends FrameLayout {
     public void setLotsLocation(LotsLocation lotsLocation) {
         this.lotsLocation = lotsLocation;
     }
+
 }

@@ -1,29 +1,22 @@
 package chhsiao.net.drawslot;
 
 import android.graphics.Point;
-import android.support.v4.view.MotionEventCompat;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.FrameLayout;
 
 
 public class DrawActivity extends ActionBarActivity {
 
     private static final int SWIPE_MIN_DISTANCE = 120;
     private static final int SWIPE_THRESHOLD_VELOCITY = 200;
-    private static final int DEFAULT_MAX_LOT_COUNT = 5;
-    private static final int DEFAULT_HIT_LOT_COUNT = 1;
 
     private volatile int maxLotCount;
-    private volatile  int hitLotCount;
+    private volatile int hitLotCount;
     private DrawsLotFrameLayout drawsLotFrameLayout;
-    private GestureDetector gestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,31 +26,24 @@ public class DrawActivity extends ActionBarActivity {
         bindView();
         initView();
         setUpListener();
-        init();
+        init(getIntent().getExtras());
 
     }
 
     private void bindView() {
-        drawsLotFrameLayout = (DrawsLotFrameLayout) findViewById(R.id.draw_game_view);
+        drawsLotFrameLayout = (DrawsLotFrameLayout) findViewById(R.id.viewDrawGame);
     }
 
     private void initView() {
         drawsLotFrameLayout.setLotsLocation(getLotsLocation());
-        gestureDetector = new GestureDetector(this, new GameGestureDetector());
     }
 
     private void setUpListener() {
-        drawsLotFrameLayout.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return gestureDetector.onTouchEvent(event);
-            }
-        });
     }
 
-    private void init() {
-        maxLotCount = DEFAULT_MAX_LOT_COUNT;
-        hitLotCount = DEFAULT_HIT_LOT_COUNT;
+    private void init(Bundle bundle) {
+        maxLotCount = bundle.getInt("maxCount");
+        hitLotCount = bundle.getInt("hitCount");
         drawsLotFrameLayout.newGame(maxLotCount, hitLotCount);
     }
 
@@ -119,7 +105,7 @@ public class DrawActivity extends ActionBarActivity {
         } else {
             maxLotCount = newMaxLotCount;
             hitLotCount = newHitLotCount;
-            drawsLotFrameLayout.newGame(maxLotCount, hitLotCount);;
+            drawsLotFrameLayout.newGame(maxLotCount, hitLotCount);
         }
     }
 }
